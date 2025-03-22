@@ -19,15 +19,15 @@ import { useNavigate } from 'react-router-dom';
 const cartItems = [
   {
     id: 1,
-    name: 'Margherita Pizza',
-    price: 14.99,
+    name: 'ButterCorn Pizza',
+    price: 359,
     quantity: 2,
     image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?ixlib=rb-4.0.3',
   },
   {
     id: 2,
     name: 'Classic Burger',
-    price: 12.99,
+    price: 199,
     quantity: 1,
     image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3',
   },
@@ -90,7 +90,7 @@ const Cart = () => {
                             {item.name}
                           </Typography>
                           <Typography variant="h6" color="primary">
-                            ${item.price.toFixed(2)}
+                          ₹{item.price.toFixed(2)}
                           </Typography>
                         </Box>
                         <Stack direction="row" alignItems="center" spacing={2}>

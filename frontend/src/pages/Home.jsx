@@ -16,23 +16,23 @@ import { useNavigate } from 'react-router-dom';
 const featuredItems = [
   {
     id: 1,
-    name: 'Supreme Pizza',
+    name: 'Veg Pizza',
     image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?ixlib=rb-4.0.3',
-    price: '$12.99',
+    price: '₹129',
     description: 'Loaded with cheese and fresh toppings',
   },
   {
     id: 2,
-    name: 'Classic Burger',
+    name: 'Chicken Burger',
     image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3',
-    price: '$8.99',
+    price: '₹229',
     description: 'Juicy patty with fresh vegetables',
   },
   {
     id: 3,
     name: 'Chicken Wings',
     image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?ixlib=rb-4.0.3',
-    price: '$10.99',
+    price: '₹139',
     description: 'Crispy wings with special sauce',
   },
 ];
