@@ -7,7 +7,6 @@ import {
   Typography,
   Menu,
   Container,
-  Avatar,
   Button,
   MenuItem,
 } from '@mui/material';
@@ -16,9 +15,13 @@ import {
   RestaurantMenu,
   ShoppingCart,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-const pages = ['Menu', 'About', 'Contact'];
+const navItems = [
+  { name: 'Menu', path: '/menu' },
+  { name: 'About', path: '/about' },
+  { name: 'Contact', path: '/contact' }
+];
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -32,6 +35,11 @@ const Navbar = () => {
     setAnchorElNav(null);
   };
 
+  const handleNavigation = (path) => {
+    handleCloseNavMenu();
+    navigate(path);
+  };
+
   return (
     <AppBar position="sticky" sx={{ backgroundColor: 'white', color: 'black' }}>
       <Container maxWidth="xl">
@@ -40,8 +48,8 @@ const Navbar = () => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -57,6 +65,7 @@ const Navbar = () => {
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -82,9 +91,9 @@ const Navbar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {navItems.map((item) => (
+                <MenuItem key={item.name} onClick={() => handleNavigation(item.path)}>
+                  <Typography textAlign="center">{item.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -94,8 +103,8 @@ const Navbar = () => {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -110,13 +119,13 @@ const Navbar = () => {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
-            {pages.map((page) => (
+            {navItems.map((item) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={item.name}
+                onClick={() => handleNavigation(item.path)}
                 sx={{ my: 2, color: 'black', display: 'block', mx: 2 }}
               >
-                {page}
+                {item.name}
               </Button>
             ))}
           </Box>
@@ -132,6 +141,13 @@ const Navbar = () => {
               sx={{ mr: 1 }}
             >
               Login
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => navigate('/register')}
+            >
+              Register
             </Button>
           </Box>
         </Toolbar>

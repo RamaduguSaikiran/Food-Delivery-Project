@@ -10,6 +10,7 @@ import {
   Link,
   InputAdornment,
   IconButton,
+  Alert,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { motion } from 'framer-motion';
@@ -18,6 +19,8 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -31,10 +34,37 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login data:', formData);
+    setError('');
+    setLoading(true);
+    
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+      
+      // Save token and user info in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('username', data.username);
+      
+      // Redirect to home or menu page
+      navigate('/menu');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,6 +101,8 @@ const Login = () => {
                 Sign in to continue to Foodie
               </Typography>
             </Box>
+
+            {error && <Alert severity="error">{error}</Alert>}
 
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
@@ -114,12 +146,13 @@ const Login = () => {
                   color="primary"
                   size="large"
                   fullWidth
+                  disabled={loading}
                   sx={{
                     borderRadius: '30px',
                     padding: '12px',
                   }}
                 >
-                  Sign In
+                  {loading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </Stack>
             </form>

@@ -10,6 +10,7 @@ import {
   Link,
   InputAdornment,
   IconButton,
+  Alert,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { motion } from 'framer-motion';
@@ -18,8 +19,10 @@ import { useNavigate } from 'react-router-dom';
 const Register = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    user: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -33,10 +36,49 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log('Registration data:', formData);
+    setError('');
+    
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Remove confirmPassword before sending to API
+      const { confirmPassword, ...registrationData } = formData;
+      
+      const response = await fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+      
+      // Save token if provided
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', formData.user);
+      }
+      
+      // Redirect to login or home page
+      navigate('/login');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,13 +116,15 @@ const Register = () => {
               </Typography>
             </Box>
 
+            {error && <Alert severity="error">{error}</Alert>}
+
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
                 <TextField
                   fullWidth
-                  label="Full Name"
-                  name="name"
-                  value={formData.name}
+                  label="Username"
+                  name="user"
+                  value={formData.user}
                   onChange={handleChange}
                   required
                   variant="outlined"
@@ -149,12 +193,13 @@ const Register = () => {
                   color="primary"
                   size="large"
                   fullWidth
+                  disabled={loading}
                   sx={{
                     borderRadius: '30px',
                     padding: '12px',
                   }}
                 >
-                  Sign Up
+                  {loading ? 'Signing Up...' : 'Sign Up'}
                 </Button>
               </Stack>
             </form>
